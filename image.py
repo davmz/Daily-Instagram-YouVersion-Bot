@@ -1,22 +1,24 @@
 import time
 from playwright.sync_api import sync_playwright
+from PIL import Image
 
 def capture_verse_image():
     url = "https://www.bible.com/verse-of-the-day"
     output_filename = "daily_verse.png"
+    cropped_output_filename = "daily_verse_cropped.png"  # ✅ Final cropped image
 
     # Start timing
     start_time = time.time()
 
     with sync_playwright() as p:
-        # ✅ Open the browser with a forced window size instead of relying on maximize
+        # ✅ Open browser with forced max window size & high-resolution settings
         browser = p.chromium.launch(
             headless=False, 
             args=["--window-size=2560,1440"]  # ✅ Forces a high-resolution window
         )
         context = browser.new_context(
             viewport={"width": 2560, "height": 1440},  # ✅ Large viewport for HD screenshots
-            device_scale_factor=3  # ✅ Higher pixel density for ultra-sharp images
+            device_scale_factor=4  # ✅ Higher pixel density (Increase from 3 to 4)
         )
         page = context.new_page()
 
@@ -45,19 +47,31 @@ def capture_verse_image():
         # Locate the final image inside the updated div
         final_verse_element = page.locator("div.overflow-hidden.rounded-1 img").first
 
-        # Wait until the final image is fully visible
-        final_verse_element.wait_for(state="visible", timeout=8000)
+        # ✅ Wait longer to ensure image is fully loaded before capturing
+        final_verse_element.wait_for(state="visible", timeout=10000)
 
-        # Take a high-quality screenshot of just the final verse image
-        final_verse_element.screenshot(path=output_filename, type="png", scale="device")
+        # ✅ Take a high-quality screenshot
+        final_verse_element.screenshot(
+            path=output_filename, 
+            type="png", 
+            scale="device"  # ✅ Uses device scaling for high resolution
+        )
 
         browser.close()
+
+    # ✅ Auto-crop the screenshot to remove white edges
+    with Image.open(output_filename) as img:
+        width, height = img.size
+        crop_margin = int(height * 0.02)  # ✅ Adjusts 2% of the image height as margin
+        cropped_img = img.crop((crop_margin, crop_margin, width - crop_margin, height - crop_margin)).copy()
+        cropped_img.save(cropped_output_filename, format="PNG", optimize=True)
 
     # Stop timing
     end_time = time.time()
     execution_time = end_time - start_time
 
     print(f"✅ Screenshot saved as {output_filename} (High Quality)")
+    print(f"✅ Cropped image saved as {cropped_output_filename} (No white edges, HD!)")
     print(f"⏱️ Total execution time: {execution_time:.2f} seconds")
 
 # Run the function
