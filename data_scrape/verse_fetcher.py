@@ -26,27 +26,27 @@ def get_verse_of_the_day(VERSE_URL):
 
 def get_verse_image_data(page):
     """Finds the Verse of the Day image, verse reference, and verse text."""
+    try:
+        # Handle cookie banner/popup if it appears
+        cookie_button = page.locator("[data-testid='close-cookie-banner']")
+        if cookie_button.is_visible():
+            cookie_button.click()
+            print("Cookie popup dismissed!")
+            page.wait_for_timeout(1000)
 
-    ### Find the Verse of the Day image
-    # Handle cookie banner/popup if present
-    cookie_button = page.locator("[data-testid='close-cookie-banner']")
-    if cookie_button.is_visible():
-        cookie_button.click()
-        print("Cookie popup dismissed!")
-        page.wait_for_timeout(1000)
+        # Locate and click the first Verse Image to remove overlay
+        image_element = page.locator("div.cursor-pointer.relative.w-full img").first
+        image_element.click(force=True)
+        print("✅ Clicked on the image to remove overlay.")
 
-    # Locate and click the first Verse Image to remove overlay
-    image_element = page.locator("div.cursor-pointer.relative.w-full img").first
-    image_element.click(force=True)
-    print("✅ Clicked on the image to remove overlay.")
+        # Wait for the new div that appears after clicking
+        page.wait_for_selector("div.overflow-hidden.rounded-1", timeout=8000)
+        print("✅ Image container updated after click.")
 
-    # Wait for the new div that appears after clicking
-    page.wait_for_selector("div.overflow-hidden.rounded-1", timeout=8000)
-    print("✅ Image container updated after click.")
+        # Get final image element
+        verse_image = page.locator("div.overflow-hidden.rounded-1 img").first
 
-    # ✅ Get final image element
-    final_image_element = page.locator("div.overflow-hidden.rounded-1 img").first
-
-    ### Find the Verse Reference and Verse Text
-
-    return final_image_element
+        return verse_image
+    except Exception as e:
+        print(f"❌ Error in get_verse_image_data: {e}")
+        return None

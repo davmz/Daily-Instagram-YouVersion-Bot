@@ -1,10 +1,10 @@
-from scraper import capture_verse_image
+from data_scrape import capture_verse_image
 
 def main():
     print("🚀 Starting the Verse Automation...")
 
     # Step #1: Capture the Verse of the Day and save the image
-    capture_verse_image()
+    verse_image, verse_reference, verse_text = capture_verse_image()
 
     # Step #2: Organize images in monthly folders and deletes old ones (new month)
     # manage_images()
