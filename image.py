@@ -9,19 +9,27 @@ def capture_verse_image():
     start_time = time.time()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)  # Set to True in production
-        page = browser.new_page()
+        # ✅ Open the browser with a forced window size instead of relying on maximize
+        browser = p.chromium.launch(
+            headless=False, 
+            args=["--window-size=2560,1440"]  # ✅ Forces a high-resolution window
+        )
+        context = browser.new_context(
+            viewport={"width": 2560, "height": 1440},  # ✅ Large viewport for HD screenshots
+            device_scale_factor=3  # ✅ Higher pixel density for ultra-sharp images
+        )
+        page = context.new_page()
 
         # Go to the Verse of the Day page
         page.goto(url, wait_until="networkidle")
 
         # ✅ Dismiss Cookie Popup if it appears
         try:
-            cookie_button = page.locator("[data-testid='close-cookie-banner']")  # More precise selector
+            cookie_button = page.locator("[data-testid='close-cookie-banner']")
             if cookie_button.is_visible():
                 cookie_button.click()
                 print("✅ Cookie popup dismissed!")
-                page.wait_for_timeout(1000)  # Allow time for popup to disappear
+                page.wait_for_timeout(1000)
         except:
             print("⚠️ No cookie popup found, continuing...")
 
@@ -41,7 +49,7 @@ def capture_verse_image():
         final_verse_element.wait_for(state="visible", timeout=8000)
 
         # Take a high-quality screenshot of just the final verse image
-        final_verse_element.screenshot(path=output_filename, scale="css")
+        final_verse_element.screenshot(path=output_filename, type="png", scale="device")
 
         browser.close()
 
@@ -49,7 +57,7 @@ def capture_verse_image():
     end_time = time.time()
     execution_time = end_time - start_time
 
-    print(f"✅ Screenshot saved as {output_filename}")
+    print(f"✅ Screenshot saved as {output_filename} (High Quality)")
     print(f"⏱️ Total execution time: {execution_time:.2f} seconds")
 
 # Run the function
