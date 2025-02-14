@@ -1,8 +1,8 @@
 import time
+from data_scrape.utils import crop_image
+from data_scrape.browser import get_browser
 from playwright.sync_api import sync_playwright
-from browser import get_browser
-from verse_fetcher import get_verse_of_the_day, get_verse_image_data
-from utils.image_utils import crop_image
+from data_scrape.verse_fetcher import get_verse_of_the_day, get_verse_image_data
 
 VERSE_URL = "https://www.bible.com/verse-of-the-day"
 
@@ -55,5 +55,5 @@ def capture_verse_image():
         except Exception:
             pass  # Ignore errors if the browser is already closed
 
-if __name__ == "__main__":
-    capture_verse_image() # Run the main function
+# if __name__ == "__main__":
+#     capture_verse_image() # Run the main function
