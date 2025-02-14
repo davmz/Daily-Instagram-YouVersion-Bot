@@ -1,7 +1,12 @@
 import os
+import sys
 import pytest
-from data_scrape.utils.image_utils import crop_image
 from PIL import Image
+
+# Add the project root to sys.path so Python can find `data_scrape`
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+
+from data_scrape.utils.image_utils import crop_image
 
 @pytest.fixture
 def sample_image(tmp_path):

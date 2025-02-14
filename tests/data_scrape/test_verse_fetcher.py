@@ -1,5 +1,10 @@
-import pytest
+import os
+import sys
 import requests_mock
+
+# ✅ Add the project root to sys.path so Python can find `data_scrape`
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
 from data_scrape.verse_fetcher import get_verse_of_the_day
 
 def test_get_verse_of_the_day():

@@ -1,5 +1,10 @@
-import pytest
+import os
+import sys
 from unittest.mock import patch, MagicMock
+
+# Add the project root to sys.path so Python can find `data_scrape`
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
 from data_scrape.scraper import capture_verse_image
 
 @patch("data_scrape.scraper.get_browser")
