@@ -9,11 +9,21 @@ def capture_verse_image():
     start_time = time.time()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)  # Debug mode, change to True for automation
+        browser = p.chromium.launch(headless=False)  # Set to True in production
         page = browser.new_page()
 
         # Go to the Verse of the Day page
         page.goto(url, wait_until="networkidle")
+
+        # ✅ Dismiss Cookie Popup if it appears
+        try:
+            cookie_button = page.locator("[data-testid='close-cookie-banner']")  # More precise selector
+            if cookie_button.is_visible():
+                cookie_button.click()
+                print("✅ Cookie popup dismissed!")
+                page.wait_for_timeout(1000)  # Allow time for popup to disappear
+        except:
+            print("⚠️ No cookie popup found, continuing...")
 
         # Locate and click the first Verse Image to remove overlay
         initial_verse_element = page.locator("div.cursor-pointer.relative.w-full img").first
