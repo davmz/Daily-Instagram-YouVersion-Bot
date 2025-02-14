@@ -2,11 +2,13 @@
 import requests
 from bs4 import BeautifulSoup
 
-def get_verse_of_the_day(VERSE_URL):
+def get_verse_of_the_day(verse_url):
     """Fetches the verse text, reference, and Bible version using BeautifulSoup."""
     try:
         # Fetch the Verse of the Day page
-        response = requests.get(VERSE_URL)
+        response = requests.get(verse_url, timeout=10)
+        response.raise_for_status() # Raise an exception for 4xx/5xx errors
+
         soup = BeautifulSoup(response.content, "html.parser")
 
         # Find the <a> tag where href starts with "/bible/compare/"
@@ -20,6 +22,11 @@ def get_verse_of_the_day(VERSE_URL):
         verse_reference = verse_reference_tag.find("p").get_text(strip=True) if verse_reference_tag else "Unknown Reference"
 
         return verse_reference, verse_text
+    
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Network error in get_verse_of_the_day: {e}")
+        return "Unknown Reference", "Unknown Verse"
+
     except Exception as e:
         print(f"❌ Error in get_verse_of_the_day: {e}")
         return "Unknown Reference", "Unknown Verse"
@@ -36,6 +43,10 @@ def get_verse_image_data(page):
 
         # Locate and click the first Verse Image to remove overlay
         image_element = page.locator("div.cursor-pointer.relative.w-full img").first
+
+        if not image_element:
+            raise ValueError("❌ Could not locate the verse image.")
+
         image_element.click(force=True)
         print("✅ Clicked on the image to remove overlay.")
 
@@ -44,9 +55,8 @@ def get_verse_image_data(page):
         print("✅ Image container updated after click.")
 
         # Get final image element
-        verse_image = page.locator("div.overflow-hidden.rounded-1 img").first
+        return page.locator("div.overflow-hidden.rounded-1 img").first
 
-        return verse_image
     except Exception as e:
         print(f"❌ Error in get_verse_image_data: {e}")
         return None

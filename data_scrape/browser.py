@@ -10,5 +10,4 @@ def get_browser(playwright):
         device_scale_factor=4
     )
 
-    page = context.new_page()
-    return browser, page
+    return browser, context.new_page()

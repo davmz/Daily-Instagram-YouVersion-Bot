@@ -1,16 +1,15 @@
 import time
-from browser import get_browser
 from playwright.sync_api import sync_playwright
+from browser import get_browser
 from verse_fetcher import get_verse_of_the_day, get_verse_image_data
-from data_scrape.utils.image_utils import crop_image
-from PIL import Image
-
+from utils.image_utils import crop_image
 
 VERSE_URL = "https://www.bible.com/verse-of-the-day"
 
 def capture_verse_image():
     """Scrapes the Verse of the Day image, verse text, and Bible version."""
     start_time = time.time()
+    browser = None
 
     try:
         with sync_playwright() as p:
@@ -48,3 +47,13 @@ def capture_verse_image():
     except Exception as e:
         print(f"❌ Error in capture_verse_image: {e}")
         return None, None, None
+    finally:
+        # Prevent double-closing errors by handling exceptions
+        try:
+            if browser:  
+                browser.close()
+        except Exception:
+            pass  # Ignore errors if the browser is already closed
+
+if __name__ == "__main__":
+    capture_verse_image() # Run the main function

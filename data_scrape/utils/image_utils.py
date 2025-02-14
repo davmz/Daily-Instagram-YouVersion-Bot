@@ -1,8 +1,12 @@
+import os
 from PIL import Image
 
 def crop_image(input_filename, output_filename, margin_percent=0.02):
     """Crops the image to remove white edges while preserving quality."""
     try:
+        if not os.path.exists(input_filename): # Ensure file exists
+            raise FileNotFoundError(f"❌ Image file not found: {input_filename}")
+
         with Image.open(input_filename) as img:
             width, height = img.size
             crop_margin = int(height * margin_percent)  # Dynamically adjust based on image size
