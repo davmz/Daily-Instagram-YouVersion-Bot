@@ -1,3 +1,18 @@
-# from scrape import get_verse_image, get_verse_text
+from scraper import capture_verse_image
 
-# image_file_name, image_data, caption = get_verse_image()
+def main():
+    print("🚀 Starting the Verse Automation...")
+
+    # Step #1: Capture the Verse of the Day and save the image
+    capture_verse_image()
+
+    # Step #2: Organize images in monthly folders and deletes old ones (new month)
+    # manage_images()
+
+    # Step #3: Post the latest image to Instagram with music, caption, and hashtags
+    # post_to_instagram()
+
+    print("🎉 Daily Verse Automation Completed!")
+
+if __name__ == "__main__":
+    main()

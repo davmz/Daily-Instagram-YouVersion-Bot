@@ -2,23 +2,24 @@ import time
 from playwright.sync_api import sync_playwright
 from PIL import Image
 
+## Capture the Verse of the Day image from YouVersion Bible website (Verse of the Day)
 def capture_verse_image():
     url = "https://www.bible.com/verse-of-the-day"
     output_filename = "daily_verse.png"
-    cropped_output_filename = "daily_verse_cropped.png"  # ✅ Final cropped image
+    cropped_output_filename = "daily_verse_cropped.png"
 
     # Start timing
     start_time = time.time()
 
     with sync_playwright() as p:
-        # ✅ Open browser with forced max window size & high-resolution settings
+        # ✅ Run Playwright in headless mode for GitHub Actions
         browser = p.chromium.launch(
-            headless=False, 
-            args=["--window-size=2560,1440"]  # ✅ Forces a high-resolution window
+            headless=True,  # ✅ Must be True for GitHub Actions
+            args=["--window-size=2560,1440"]
         )
         context = browser.new_context(
-            viewport={"width": 2560, "height": 1440},  # ✅ Large viewport for HD screenshots
-            device_scale_factor=4  # ✅ Higher pixel density (Increase from 3 to 4)
+            viewport={"width": 2560, "height": 1440},
+            device_scale_factor=4
         )
         page = context.new_page()
 
@@ -47,15 +48,11 @@ def capture_verse_image():
         # Locate the final image inside the updated div
         final_verse_element = page.locator("div.overflow-hidden.rounded-1 img").first
 
-        # ✅ Wait longer to ensure image is fully loaded before capturing
+        # Wait until the final image is fully visible
         final_verse_element.wait_for(state="visible", timeout=10000)
 
         # ✅ Take a high-quality screenshot
-        final_verse_element.screenshot(
-            path=output_filename, 
-            type="png", 
-            scale="device"  # ✅ Uses device scaling for high resolution
-        )
+        final_verse_element.screenshot(path=output_filename, type="png", scale="device")
 
         browser.close()
 
@@ -73,6 +70,3 @@ def capture_verse_image():
     print(f"✅ Screenshot saved as {output_filename} (High Quality)")
     print(f"✅ Cropped image saved as {cropped_output_filename} (No white edges, HD!)")
     print(f"⏱️ Total execution time: {execution_time:.2f} seconds")
-
-# Run the function
-capture_verse_image()
