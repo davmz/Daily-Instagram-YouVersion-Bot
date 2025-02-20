@@ -7,7 +7,7 @@ def get_browser(playwright):
     )
     context = browser.new_context(
         viewport={"width": 2560, "height": 1440},
-        device_scale_factor=4
+        device_scale_factor=3
     )
 
     return browser, context.new_page()

@@ -1,6 +1,6 @@
 import time
-from file_storage import manage_storage
-from data_scrape import capture_verse_image
+# from file_storage import manage_storage
+from data_scrape.scraper import capture_verse_image
 
 def main():
     """Runs the Verse of the Day bot and tracks total execution time."""
@@ -9,15 +9,16 @@ def main():
 
     print("🚀 Starting the Verse Automation...")
 
-    # # Step #1: Capture the Verse of the Day and save the image
-    # verse_image, verse_reference, verse_text = capture_verse_image()
+    # Step #1: Capture the Verse of the Day and save the image
+    verse_image, verse_reference, verse_text = capture_verse_image()
 
-    # print(f"📸 Captured Verse Image: {verse_image}")
-    # print(f"📖 Verse Reference: {verse_reference}")
-    # print(f"📜 Verse Text: {verse_text}")
+    print(f"📸 Captured Verse Image: {verse_image}")
+    print(f"📖 Verse Reference: {verse_reference}")
+    print(f"📜 Verse Text: {verse_text}")
 
     # Step #2: Organize images in monthly folders and deletes old ones (new month)
-    manage_storage()
+    # manage_storage()
+    # manage_storage(verse_reference, verse_image)
 
     # Step #3: Post the latest image to Instagram with music, caption, and hashtags
     # post_to_instagram()
