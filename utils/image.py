@@ -18,7 +18,7 @@ def crop_image(input_filename, output_filename, margin_percent=0.02):
             cropped_img = cropped_img.convert("RGBA")  # Ensures lossless color preservation
 
             # Save with max quality (no compression)
-            cropped_img.save(output_filename, format="PNG", optimize=False)  # No compression
+            cropped_img.save(output_filename, format="PNG", optimize=False, compress_level=0)  # No compression
 
         print(f"✅ Cropped image saved as {output_filename} (Max Quality)")
         return output_filename

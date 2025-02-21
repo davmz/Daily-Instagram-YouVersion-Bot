@@ -9,10 +9,7 @@ from googleapiclient.http import MediaFileUpload
 SERVICE_ACCOUNT_FILE = "google_drive/service_account.json"
 
 def upload_to_google_drive(file_path):
-    """
-    Uploads the given file to Google Drive inside `VOTD/{YEAR}/{MM_Month}/`
-    """
-
+    """Uploads the given file to Google Drive inside `VOTD/{YEAR}/{MM_Month}/`"""
     # ✅ Start execution timer
     start_time = time.time()
     
@@ -65,7 +62,7 @@ def upload_to_google_drive(file_path):
             filename = os.path.basename(file_path)
             print(f"✅ Found '{filename}'. Uploading...")
             file_metadata = {"name": filename, "parents": [month_folder_id]}
-            media = MediaFileUpload(file_path, mimetype="image/png")  # Adjust if needed
+            media = MediaFileUpload(file_path, mimetype="image/png", resumable=True)
             drive_service.files().create(body=file_metadata, media_body=media, fields="id").execute()
             print(f"✅ Uploaded '{filename}' to Google Drive inside: VOTD/{current_year}/{current_month}/")
         else:

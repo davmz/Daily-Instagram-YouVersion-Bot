@@ -2,9 +2,9 @@ import os
 import time
 from playwright.sync_api import sync_playwright
 
-from data_scrape import get_browser, get_verse_of_the_day, get_verse_image_data
 from utils.image import crop_image
 from utils.file_verse import generate_filename
+from data_scrape import get_browser, get_verse_of_the_day, get_verse_image_data
 
 # 🔥 Get absolute project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
