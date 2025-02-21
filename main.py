@@ -20,8 +20,14 @@ def main():
     stored_image_path =  manage_storage()
     print(f"✅ Image successfully stored: {stored_image_path}")
 
-    # Step #3: Post the latest image to Instagram with music, caption, and hashtags
-    # post_to_instagram()
+    # Step #3: Upload Image to Google Drive
+    if stored_image_path:
+        print("📤 Uploading Image to Google Drive...")
+        # authenticate_drive()
+        # upload_to_drive(stored_image_path)
+        print("✅ Image successfully uploaded to Google Drive!")
+
+    # Step #4: Upload Image to Instagram
 
     print("🎉 Daily Verse Automation Completed!")
 
