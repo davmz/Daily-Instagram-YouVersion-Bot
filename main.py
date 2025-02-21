@@ -1,5 +1,5 @@
 import time
-# from file_storage import manage_storage
+from file_storage import manage_storage
 from data_scrape.scraper import capture_verse_image
 
 def main():
@@ -17,8 +17,8 @@ def main():
     print(f"📜 Verse Text: {verse_text}")
 
     # Step #2: Organize images in monthly folders and deletes old ones (new month)
-    # manage_storage()
-    # manage_storage(verse_reference, verse_image)
+    stored_image_path =  manage_storage()
+    print(f"✅ Image successfully stored: {stored_image_path}")
 
     # Step #3: Post the latest image to Instagram with music, caption, and hashtags
     # post_to_instagram()

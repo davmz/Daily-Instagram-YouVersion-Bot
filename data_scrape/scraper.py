@@ -3,7 +3,8 @@ import time
 from playwright.sync_api import sync_playwright
 
 from data_scrape import get_browser, get_verse_of_the_day, get_verse_image_data
-from data_scrape.utils import crop_image, generate_filename
+from utils.image import crop_image
+from utils.file_verse import generate_filename
 
 # 🔥 Get absolute project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -13,16 +14,6 @@ verse_images_dir = os.path.join(project_root, "verse_images")
 os.makedirs(verse_images_dir, exist_ok=True)
 
 VERSE_URL = "https://www.bible.com/verse-of-the-day"
-
-# def format_verse_reference(verse_reference):
-#     """Formats the verse reference by removing spaces and replacing `:` with `.`."""
-#     return verse_reference.replace(" ", "").replace(":", ".")
-
-# def generate_filename(verse_reference):
-#     """Generates a filename in the format YYYY-MM-DD_VOTD_versereference.png"""
-#     now = datetime.datetime.now()
-#     formatted_reference = format_verse_reference(verse_reference)  # 🛠 Apply formatting fix
-#     return f"{now.strftime('%Y-%m-%d')}_VOTD_{formatted_reference}.png"
 
 def capture_verse_image():
     """Scrapes the Verse of the Day image, verse text, and Bible version."""
