@@ -1,7 +1,8 @@
 import time
+
 from file_storage import manage_storage
 from data_scrape.scraper import capture_verse_image
-from google_drive.google_drive import upload_to_google_drive
+from google_drive.google_drive import process_google_drive_uploads
 
 def main():
     """Runs the Verse of the Day bot and tracks total execution time."""
@@ -24,10 +25,11 @@ def main():
     # Step #3: Upload Image to Google Drive
     if stored_image_path:
         print("📤 Uploading Image to Google Drive...")
-        upload_to_google_drive(stored_image_path)
+        process_google_drive_uploads(stored_image_path)
         print("✅ Image successfully uploaded to Google Drive!")
 
     # Step #4: Upload Image to Instagram
+    
 
     print("🎉 Daily Verse Automation Completed!")
 
