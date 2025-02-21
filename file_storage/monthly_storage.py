@@ -28,8 +28,26 @@ def find_todays_image():
     print(f"❌ No image found for today ({today_date}) in {VERSE_IMAGE_DIR}")
     return None  # Return None if no matching file is found
 
+import os
+import shutil
+import datetime
+
+# 🔥 Ensure paths are correctly referenced from the project root
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+VERSE_IMAGE_DIR = os.path.join(project_root, "verse_images")
+
+# 🔹 Ensure last_run_month.txt is stored inside the storage folder
+STORAGE_DIR = os.path.dirname(__file__)  # This makes sure it's inside `file_storage/`
+STORAGE_FILE = os.path.join(STORAGE_DIR, "last_run_month.txt")
+
+def get_current_month_folder():
+    """Returns the current month folder path in the format `02-February/`"""
+    now = datetime.datetime.now()
+    month_folder = f"{now.strftime('%m')}-{now.strftime('%B')}"  # ✅ 02-February format
+    return os.path.join(VERSE_IMAGE_DIR, month_folder)
+
 def check_for_new_month():
-    """Detects if a new month has started and prepares for a new storage cycle."""
+    """Detects if a new month has started and deletes last month’s folder safely."""
     now = datetime.datetime.now()
     current_month = now.strftime("%m-%B")  # ✅ 02-February format
 
@@ -40,17 +58,23 @@ def check_for_new_month():
             last_month = f.read().strip()
 
     if last_month != current_month:
-        print("🗓️ New month detected. Preparing for new storage cycle...")
+        print("🗓️ New month detected. Cleaning up old folders...")
 
         # Identify last month’s folder
         last_month_dt = now.replace(day=1) - datetime.timedelta(days=1)
         last_month_folder = os.path.join(VERSE_IMAGE_DIR, last_month_dt.strftime("%m-%B"))
 
         if os.path.exists(last_month_folder):
-            print(f"📤 Last month's images are in {last_month_folder} and ready for processing.")
-            # 🔹 Later, this will call Google Drive upload before deletion.
+            print(f"🗑️ Deleting last month’s folder: {last_month_folder}")
 
-        # Save the new month as the last recorded month inside storage/
+            # ✅ Safe delete (prevents errors)
+            try:
+                shutil.rmtree(last_month_folder)
+                print(f"✅ Successfully deleted: {last_month_folder}")
+            except Exception as e:
+                print(f"❌ Error deleting folder: {e}")
+
+        # ✅ Save the new month inside `storage/`
         with open(STORAGE_FILE, "w") as f:
             f.write(current_month)
 
