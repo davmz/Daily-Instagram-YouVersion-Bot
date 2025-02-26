@@ -29,7 +29,7 @@ def main():
         print("✅ Image successfully uploaded to Google Drive!")
 
     # Step #4: Upload Image to Instagram
-    
+    ## Issues setting up API -> will not continue
 
     print("🎉 Daily Verse Automation Completed!")
 
