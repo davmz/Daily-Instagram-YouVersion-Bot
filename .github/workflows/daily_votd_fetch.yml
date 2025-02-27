@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🔧 Set Up Python
         uses: actions/setup-python@v4
@@ -33,7 +33,7 @@ jobs:
 
       - name: 📤 Upload Logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: logs-${{ github.run_id }}
           path: logs/
