@@ -1,0 +1,39 @@
+name: Daily Verse of the Day Automation
+
+on: 
+  schedule:
+    - cron: "0 6 * * *" # Runs at 12:00 AM CST
+  workflow_dispatch: # Manually trigger the workflow
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔧 Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      
+      - name: 📦 Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: 🔑 Set Up Google Drive Service Account
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: |
+          echo "$GOOGLE_SERVICE_ACCOUNT" | jq . > google_drive/service_account.json
+
+      - name: 🚀 Run Python Script
+        run: python main.py
+
+      - name: 📤 Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs-${{ github.run_id }}
+          path: logs/
