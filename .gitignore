@@ -175,3 +175,5 @@ google_drive/service_account.json
 
 # Ignore Instagram credentials
 instagram/credentials.json
+
+verse_images/
