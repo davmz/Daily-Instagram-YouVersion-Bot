@@ -23,8 +23,4 @@
 4. **Posts the verse to Instagram automatically** using GitHub Actions
 5. **Deletes old month’s images** when a new month starts
 
-## 🔧 Setup Instructions
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/yourusername/instagram-verse-bot.git
-****
+The bot runs daily at 12:00 AM CST using GitHub Actions.
