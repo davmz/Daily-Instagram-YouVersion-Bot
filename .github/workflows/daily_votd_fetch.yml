@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Upgraded to v4
 
       - name: 🔧 Set Up Python
         uses: actions/setup-python@v4
@@ -21,6 +21,10 @@ jobs:
       - name: 📦 Install Dependencies
         run: |
           pip install -r requirements.txt
+
+      - name: 🌍 Install Playwright Browsers # Installs Chromium & dependencies
+        run: |
+          playwright install --with-deps
 
       - name: 🔑 Set Up Google Drive Service Account
         env:
@@ -33,7 +37,7 @@ jobs:
 
       - name: 📤 Upload Logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4 # Upgraded to v4
         with:
           name: logs-${{ github.run_id }}
           path: logs/
