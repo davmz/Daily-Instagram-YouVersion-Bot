@@ -13,10 +13,10 @@ FAILED_UPLOADS_DIR = os.path.join(VERSE_IMAGES_DIR, "failed_uploads")  # ✅ Fai
 LOGS_DIR = "logs"
 FAILED_LOG_FILE = os.path.join(LOGS_DIR, "failed_log.txt")
 
-# ✅ Ensure `logs/` directory exists
+# Ensure `logs/` directory exists
 os.makedirs(LOGS_DIR, exist_ok=True)
 
-# ✅ Authenticate **once** and reuse
+# Authenticate **once** and reuse
 def authenticate_drive():
     """Authenticates and returns a Google Drive API service instance."""
     credentials = service_account.Credentials.from_service_account_file(
@@ -24,12 +24,17 @@ def authenticate_drive():
     )
     return build("drive", "v3", credentials=credentials)
 
-# ✅ Create a single instance of the Drive service
+# Create a single instance of the Drive service
 drive_service = authenticate_drive()
+
+def file_exists_in_drive(filename, parent_folder_id):
+    """Checks if the file already exists in Google Drive to prevent duplicate uploads."""
+    query = f"name='{filename}' and '{parent_folder_id}' in parents and trashed=false"
+    results = drive_service.files().list(q=query, fields="files(id)").execute().get("files", [])
+    return len(results) > 0  # Returns True if file exists in Google Drive
 
 def get_or_create_folder(folder_name, parent_id=None):
     """Finds or creates a folder in Google Drive and returns its ID. Prints folder details for debugging."""
-    
     query = f"name='{folder_name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
     if parent_id:
         query += f" and '{parent_id}' in parents"
@@ -56,13 +61,7 @@ def get_drive_folders():
     year_folder_id = get_or_create_folder(current_year, votd_folder_id)
     current_month = datetime.now().strftime("%m_%B")  # Example: "02_February"
     month_folder_id = get_or_create_folder(current_month, year_folder_id)
-    return month_folder_id  # ✅ Returns folder ID for uploads
-
-def file_exists_in_drive(filename, parent_folder_id):
-    """Checks if the file already exists in Google Drive to prevent duplicate uploads."""
-    query = f"name='{filename}' and '{parent_folder_id}' in parents and trashed=false"
-    results = drive_service.files().list(q=query, fields="files(id)").execute().get("files", [])
-    return len(results) > 0  # ✅ Returns True if file exists, False otherwise
+    return month_folder_id  # Returns folder ID for uploads
 
 def upload_to_google_drive(file_path):
     """
@@ -155,7 +154,6 @@ def log_failed_upload(file_path):
 
 def retry_failed_uploads():
     """Retries uploads for files in `failed_uploads/`, then removes them from `failed_log.txt`."""
-    
     # Ensure failed_uploads directory exists before accessing it
     if not os.path.exists(FAILED_UPLOADS_DIR):
         print("⚠️ No failed uploads directory found. Skipping retry process.")
