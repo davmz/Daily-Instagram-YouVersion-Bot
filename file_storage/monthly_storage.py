@@ -2,18 +2,18 @@ import os
 import shutil
 import datetime
 
-# 🔥 Ensure paths are correctly referenced from the project root
+# Ensure paths are correctly referenced from the project root
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 VERSE_IMAGE_DIR = os.path.join(project_root, "verse_images")
 
-# 🔹 Ensure last_run_month.txt is stored inside the storage folder
+# Ensure last_run_month.txt is stored inside the storage folder
 STORAGE_DIR = os.path.dirname(__file__)  # Makes sure it's inside `storage/`
 STORAGE_FILE = os.path.join(STORAGE_DIR, "last_run_month.txt")
 
 def get_current_month_folder():
     """Returns the current month folder path in the format `02-February/`"""
     now = datetime.datetime.now()
-    month_folder = f"{now.strftime('%m')}-{now.strftime('%B')}"  # ✅ 02-February format
+    month_folder = f"{now.strftime('%m')}-{now.strftime('%B')}"  # 02-February format
     return os.path.join(VERSE_IMAGE_DIR, month_folder)
 
 def find_todays_image():
@@ -22,34 +22,16 @@ def find_todays_image():
 
     # Check in root `verse_images/` for today's image
     for filename in os.listdir(VERSE_IMAGE_DIR):
-        if today_date in filename and filename.endswith(".png"):  # ✅ Ensure it's a PNG image
+        if today_date in filename and filename.endswith(".png"):  # Ensure it's a PNG image
             return os.path.join(VERSE_IMAGE_DIR, filename)
 
     print(f"❌ No image found for today ({today_date}) in {VERSE_IMAGE_DIR}")
     return None  # Return None if no matching file is found
 
-import os
-import shutil
-import datetime
-
-# 🔥 Ensure paths are correctly referenced from the project root
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-VERSE_IMAGE_DIR = os.path.join(project_root, "verse_images")
-
-# 🔹 Ensure last_run_month.txt is stored inside the storage folder
-STORAGE_DIR = os.path.dirname(__file__)  # This makes sure it's inside `file_storage/`
-STORAGE_FILE = os.path.join(STORAGE_DIR, "last_run_month.txt")
-
-def get_current_month_folder():
-    """Returns the current month folder path in the format `02-February/`"""
-    now = datetime.datetime.now()
-    month_folder = f"{now.strftime('%m')}-{now.strftime('%B')}"  # ✅ 02-February format
-    return os.path.join(VERSE_IMAGE_DIR, month_folder)
-
 def check_for_new_month():
     """Detects if a new month has started and deletes last month’s folder safely."""
     now = datetime.datetime.now()
-    current_month = now.strftime("%m-%B")  # ✅ 02-February format
+    current_month = now.strftime("%m-%B")  # 02-February format
 
     # Read last recorded month
     last_month = None
@@ -67,14 +49,14 @@ def check_for_new_month():
         if os.path.exists(last_month_folder):
             print(f"🗑️ Deleting last month’s folder: {last_month_folder}")
 
-            # ✅ Safe delete (prevents errors)
+            # Safe delete (prevents errors)
             try:
                 shutil.rmtree(last_month_folder)
                 print(f"✅ Successfully deleted: {last_month_folder}")
             except Exception as e:
                 print(f"❌ Error deleting folder: {e}")
 
-        # ✅ Save the new month inside `storage/`
+        # Save the new month inside `storage/`
         with open(STORAGE_FILE, "w") as f:
             f.write(current_month)
 
@@ -86,7 +68,7 @@ def store_image(image_path):
     # Get the current month folder (e.g., verse_images/02-February)
     month_folder = get_current_month_folder()
     
-    # ✅ Create the month folder if it doesn't exist
+    # Create the month folder if it doesn't exist
     os.makedirs(month_folder, exist_ok=True)  
 
     # Extract only the filename from the full image path
